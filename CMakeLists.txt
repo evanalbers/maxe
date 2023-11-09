@@ -15,7 +15,7 @@ add_subdirectory ("TheSimulator")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-target_link_libraries("TheSimulator" PRIVATE pybind11::embed Threads::Threads)
+target_link_libraries("TheSimulator" PRIVATE pybind11::embed Threads::Threads stdc++fs)
 
 # To Check if we need filesystem
 include(CheckCXXSymbolExists)
