@@ -9,13 +9,19 @@ project ("TheSimulator" VERSION 2.0.0 LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_STANDARD 17)
 
+# trying to find venv 
+set(CMAKE_FIND_FRAMEWORK NEVER)
+set(Python_FIND_VIRTUALENV ONLY)
+
+
+
 # Include sub-projects.
 add_subdirectory(pybind11)
 add_subdirectory ("TheSimulator")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-target_link_libraries("TheSimulator" PRIVATE pybind11::embed Threads::Threads stdc++fs)
+target_link_libraries("TheSimulator" PRIVATE pybind11::embed Threads::Threads)
 
 # To Check if we need filesystem
 include(CheckCXXSymbolExists)
