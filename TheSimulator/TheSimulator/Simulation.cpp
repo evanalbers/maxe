@@ -171,7 +171,7 @@ void Simulation::setupChildConfiguration(const pugi::xml_node& node, const std::
 			eaptr->configure(*nit, configurationPath);
 			m_agentList.push_back(std::move(eaptr));
 		} else {
-			pugi::xml_attribute att = node.attribute("file");
+			pugi::xml_attribute att = (*nit).attribute("file");
 			if (!att.empty()) {
 				std::string filePath = att.as_string();
 				if (!std::filesystem::exists(filePath)) {

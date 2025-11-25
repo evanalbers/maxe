@@ -1,5 +1,6 @@
 #include "PythonAgent.h"
 #include "Simulation.h"
+#include <filesystem>
 
 #include <pybind11/stl.h>
 
@@ -19,13 +20,30 @@ void PythonAgent::configure(const pugi::xml_node& node, const std::string& confi
 	}
 
 	py::object agentClass;
+	std::string moduleName;
+	std::string moduleDir;
+
 	if (m_file == "") {
-		py::module m = py::module::import(m_class.c_str());
-		agentClass = m.attr(m_class.c_str());
+		// No file specified, use class name as module name
+		moduleName = m_class;
+		// Assume it's already in the Python path
 	} else {
-		py::object result = py::eval_file(m_file);
-		agentClass = result.attr(m_class.c_str());
+		// File specified, extract module name and directory
+		std::filesystem::path filePath(m_file);
+		moduleName = filePath.stem().string();  // filename without extension
+		moduleDir = filePath.parent_path().string();
+		
+		// Add the directory to Python path so we can import it
+		if (!moduleDir.empty()) {
+			py::module sys = py::module::import("sys");
+			py::list path = sys.attr("path");
+			path.insert(0, moduleDir);
+		}
 	}
+
+	// Now use the same import approach for both
+	py::module m = py::module::import(moduleName.c_str());
+	agentClass = m.attr(m_class.c_str());
 
 	py::cpp_function nameStringFunction = [this]() {
 		return this->name();
